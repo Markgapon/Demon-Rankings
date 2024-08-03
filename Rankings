@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking Levels</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin-top: 20px;
+      max-width: 80%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .level {
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      text-align: left;
+      width: calc(33.333% - 20px); /* 3 levels per row */
+      box-sizing: border-box;
+    }
+    .level-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .level-ranking {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .input-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .input-container input {
+      width: 100px;
+      text-align: center;
+      margin-right: 10px;
+    }
+    .input-container button {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .bottom-section {
+      margin-top: 20px;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    .popup-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      max-width: 80%;
+    }
+    .close-popup {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+    .values-list {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+    .values-list li {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .remove-button {
+      cursor: pointer;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none; /* Initially hide remove buttons */
+    }
+    .remove-button:hover {
+      background-color: #cc0000;
+    }
+
+    /* Login and Signup Styles */
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .auth-container input {
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 200px;
+      box-sizing: border-box;
+    }
+    .auth-container button {
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 100px;
+    }
+    .auth-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="auth-container" class="auth-container">
+    <div id="login-container">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username">
+      <br>
+      <input type="password" id="login-password" placeholder="Password">
+      <br>
+      <button onclick="login()">Login</button>
+      <br>
+      <p>Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+    </div>
+    <div id="signup-container" style="display: none;">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username">
+      <br>
+      <input type="password" id="signup-password" placeholder="Password">
+      <br>
+      <button onclick="signup()">Sign Up</button>
+      <br>
+      <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
+  </div>
+
+  <div id="main-container" style="display: none;">
+    <div class="container">
+      <div class="level" id="theAbyssalLevel">
+        <h2 class="level-title">The Abyssal</h2>
+        <div id="averageTheAbyssal" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="theAbyssal" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('theAbyssal')">Submit</button>
+        </div>
+      </div>
+      <div class="level" id="hellReboundLevel">
+        <h2 class="level-title">Hell Rebound</h2>
+        <div id="averageHellRebound" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="hellRebound" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('hellRebound')">Submit</button>
+        </div>
+      </div>
+      <div class="level" id="kanalizatsiyaLevel">
+        <h2 class="level-title">Kanalizatsiya</h2>
+        <div id="averageKanalizatsiya" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="kanalizatsiya" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('kanalizatsiya')">Submit</button>
+        </div>
+      </div>
+      <div class="level" id="cutMachineLevel">
+        <h2 class="level-title">Cut Machine</h2>
+        <div id="averageCutMachine" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="cutMachine" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('cutMachine')">Submit</button>
+        </div>
+      </div>
+      <div class="level" id="kingdomOfJeffLevel">
+        <h2 class="level-title">Kingdom Of Jeff</h2>
+        <div id="averageKingdomOfJeff" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="kingdomOfJeff" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('kingdomOfJeff')">Submit</button>
+        </div>
+      </div>
+      <div class="level" id="wanderOfThoughtLevel">
+        <h2 class="level-title">Wander Of Thought</h2>
+        <div id="averageWanderOfThought" class="level-ranking">Ranking: N/A</div>
+        <div class="input-container">
+          <input type="number" id="wanderOfThought" placeholder="Enter ranking" min="0" max="10">
+          <button onclick="saveNumber('wanderOfThought')">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <input type="password" id="accessCode" placeholder="Enter access code">
+      <button onclick="checkAccess()">Enter Code</button>
+      <button onclick="openClearSpecific()" id="clearSpecificButton" disabled>Clear Specific</button>
+      <button onclick="clearAllRankings()" id="clearButton" disabled>Clear All</button>
+    </div>
+
+    <!-- Popup for Clear Specific -->
+    <div class="popup" id="clearSpecificPopup">
+      <div class="popup-content">
+        <span class="close-popup" onclick="closeClearSpecificPopup()">&times;</span>
+        <h3>Submitted Values</h3>
+        <ul class="values-list" id="valuesList">
+          <!-- Dynamic content added here -->
+        </ul>
+        <button onclick="clearSpecific()">Clear Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentUser = null;
+
+    function login() {
+      var username = document.getElementById('login-username').value.trim();
+      var password = document.getElementById('login-password').value.trim();
+      var users = JSON.parse(localStorage.getItem('users')) || [];
+
+      var user = users.find(function(u) {
+        return u.username === username && u.password === password;
+      });
+
+      if (user) {
+        currentUser = username;
+        showMain();
+      } else {
+        alert('Invalid username or password.');
+      }
+    }
+
+    function signup() {
+      var username = document.getElementById('signup-username').value.trim();
+      var password = document.getElementById('signup-password').value.trim();
+      var users = JSON.parse(localStorage.getItem('users')) || [];
+
+      var existingUser = users.find(function(u) {
+        return u.username === username;
+      });
+
+      if (existingUser) {
+        alert('User already exists. Please log in.');
+        showLogin();
+      } else {
+        users.push({ username: username, password: password });
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem(username + '_submittedLevels', JSON.stringify([]));
+        alert('Sign up successful. Please log in.');
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('login-container').style.display = 'flex';
+      document.getElementById('signup-container').style.display = 'none';
+    }
+
+    function showSignup() {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('signup-container').style.display = 'flex';
+    }
+
+    function showMain() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('main-container').style.display = 'block';
+      document.getElementById('clearButton').disabled = true;
+      document.getElementById('clearSpecificButton').disabled = true;
+
+      var levels = ["theAbyssal", "hellRebound", "kanalizatsiya", "cutMachine", "kingdomOfJeff", "wanderOfThought"];
+      levels.forEach(function(level) {
+        updateAverage(level);
+      });
+    }
+
+    function saveNumber(level) {
+      var value = document.getElementById(level).value.trim();
+      if (value === '' || isNaN(value) || parseInt(value) < 0 || parseInt(value) > 10) {
+        alert('Please enter a valid number between 0 and 10.');
+        return;
+      }
+
+      var submittedLevels = JSON.parse(localStorage.getItem(currentUser + '_submittedLevels')) || [];
+      if (submittedLevels.includes(level)) {
+        alert('You have already submitted a value for this level.');
+        return;
+      }
+
+      submittedLevels.push(level);
+      localStorage.setItem(currentUser + '_submittedLevels', JSON.stringify(submittedLevels));
+      updateAverage(level);
+      document.getElementById(level).value = '';
+      document.getElementById('clearButton').disabled = false;
+      document.getElementById('clearSpecificButton').disabled = false;
+    }
+
+    function updateAverage(level) {
+      var submittedLevels = JSON.parse(localStorage.getItem(currentUser + '_submittedLevels')) || [];
+      var levelElement = document.getElementById('average' + level);
+      var values = submittedLevels.map(function(l) {
+        return parseInt(document.getElementById(l).value.trim());
+      }).filter(function(v) {
+        return !isNaN(v);
+      });
+
+      if (values.length === 0) {
+        levelElement.textContent = 'Ranking: N/A';
+      } else {
+        var sum = values.reduce(function(a, b) { return a + b; }, 0);
+        var average = sum / values.length;
+        levelElement.textContent = 'Ranking: ' + average.toFixed(2);
+      }
+    }
+
+    function clearAllRankings() {
+      var levels = ["theAbyssal", "hellRebound", "kanalizatsiya", "cutMachine", "kingdomOfJeff", "wanderOfThought"];
+      levels.forEach(function(level) {
+        document.getElementById(level).value = '';
+      });
+      localStorage.setItem(currentUser + '_submittedLevels', JSON.stringify([]));
+      var levelElements = document.querySelectorAll('.level-ranking');
+      levelElements.forEach(function(element) {
+        element.textContent = 'Ranking: N/A';
+      });
+      document.getElementById('clearButton').disabled = true;
+      document.getElementById('clearSpecificButton').disabled = true;
+    }
+
+    function openClearSpecific() {
+      var submittedLevels = JSON.parse(localStorage.getItem(currentUser + '_submittedLevels')) || [];
+      var valuesList = document.getElementById('valuesList');
+      valuesList.innerHTML = '';
+      submittedLevels.forEach(function(level) {
+        var listItem = document.createElement('li');
+        listItem.textContent = level;
+        var removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.className = 'remove-button';
+        removeButton.onclick = function() {
+          removeFromSubmittedLevels(level);
+        };
+        listItem.appendChild(removeButton);
+        valuesList.appendChild(listItem);
+      });
+      document.getElementById('clearSpecificPopup').style.display = 'block';
+    }
+
+    function closeClearSpecificPopup() {
+      document.getElementById('clearSpecificPopup').style.display = 'none';
+    }
+
+    function removeFromSubmittedLevels(level) {
+      var submittedLevels = JSON.parse(localStorage.getItem(currentUser + '_submittedLevels')) || [];
+      var index = submittedLevels.indexOf(level);
+      if (index !== -1) {
+        submittedLevels.splice(index, 1);
+      }
+      localStorage.setItem(currentUser + '_submittedLevels', JSON.stringify(submittedLevels));
+      updateAverage(level);
+      closeClearSpecificPopup();
+    }
+
+    function checkAccess() {
+      var accessCode = document.getElementById('accessCode').value.trim();
+      if (accessCode === '1234') {
+        document.getElementById('clearButton').disabled = false;
+        document.getElementById('clearSpecificButton').disabled = false;
+        document.getElementById('accessCode').value = '';
+      } else {
+        alert('Incorrect access code.');
+      }
+    }
+  </script>
+</body>
+</html>
